@@ -10,7 +10,7 @@ class User(db.Model):
     last_name = db.Column(db.String(120), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(250), unique=False, nullable=False)
-    birth_date = db.Column(db.Date, unique=False, nullable=False)
+    birth_date = db.Column(db.DateTime, unique=False, nullable=False)
     created_date = db.Column(db.DateTime(timezone=True), unique=False, nullable=False)
     
     def __repr__(self):
@@ -21,7 +21,8 @@ class User(db.Model):
             "user_id": self.user_id,
             "email": self.email,
             "first_name": self.first_name,
-            "last_name": self.last_name
+            "last_name": self.last_name,
+            "birth_date": self.birth_date
             # do not serialize the password, its a security breach
         }
 

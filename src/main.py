@@ -73,7 +73,7 @@ def handle_user():
         db.session.add(user1)
         db.session.commit()
         return "ok", 200
-        
+
     # GET request - shows all users 
     if request.method == 'GET':
         all_people = User.query.all()
@@ -105,8 +105,6 @@ def delete_info(user_id):
             db.session.delete(user_to_delete)
             db.session.commit()
             return jsonify(user_to_delete.serialize()), 204
-
- 
 
 
 # Handle/serialize errors like a JSON object

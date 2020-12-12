@@ -73,6 +73,7 @@ def handle_user():
         db.session.add(user1)
         db.session.commit()
         return "ok", 200
+        
     # GET request - shows all users 
     if request.method == 'GET':
         all_people = User.query.all()
@@ -80,6 +81,32 @@ def handle_user():
         return jsonify(all_people), 200
 
     return "Invalid Method", 404
+
+
+# update user by id
+@app.route('/user/<int:user_id>', methods=['PUT'])
+def update_info(user_id):
+        request_body= request.get_json()
+        user_1 = User.query.get(user_id)
+        user_1.email = request_body["email"]
+        db.session.commit()
+        return jsonify(user_1.serialize()), 200 
+
+
+# deletes by id
+@app.route('/user/<int:user_id>', methods=['DELETE'])
+def delete_info(user_id):
+        request_body= request.get_json()
+        print(request_body)
+        user_to_delete = User.query.get(user_id)
+        if user_to_delete is None:
+            raise APIException('User not found', status_code=404)
+        else:
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            return jsonify(user_to_delete.serialize()), 204
+
+ 
 
 
 # Handle/serialize errors like a JSON object

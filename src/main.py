@@ -82,13 +82,26 @@ def handle_user():
 
     return "Invalid Method", 404
 
+@app.route('/user/<int:user_id>', methods=['GET'])
+def get_single_user(user_id):
+        get_user = User.query.get(user_id)
+        return jsonify(get_user.serialize()), 200
 
 # update user by id
 @app.route('/user/<int:user_id>', methods=['PUT'])
 def update_info(user_id):
         request_body= request.get_json()
         user_1 = User.query.get(user_id)
-        user_1.email = request_body["email"]
+        if "email" in request_body:
+            user_1.email = request_body["email"]
+        if "password" in request_body:
+            user_1.password = request_body["password"]
+        if "first_name" in request_body:
+            user_1.first_name = request_body["first_name"]
+        if "last_name" in request_body:
+            user_1.last_name = request_body["last_name"]
+        if "birth_date" in request_body:
+            user_1.birth_date = request_body["birth_date"]
         db.session.commit()
         return jsonify(user_1.serialize()), 200 
 

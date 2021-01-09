@@ -51,6 +51,7 @@ class Favorites(db.Model):
     
     user_id = db.Column(db.Integer, primary_key=True)
     drink_id = db.Column(db.Integer, primary_key=True)
+    drink_name = db.Column(db.String(250), unique=False, nullable=False)
 
     def __repr__(self):
         return '<Favorites %r>' % self.user_id
@@ -58,6 +59,7 @@ class Favorites(db.Model):
     def serialize(self):
         return {
             "user_id": self.user_id,
-            "drink_id": self.drink_id
+            "drink_id": self.drink_id,
+            "drink_name": self.drink_name
             # do not serialize the password, its a security breach
         }

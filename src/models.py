@@ -26,31 +26,10 @@ class User(db.Model):
             # do not serialize the password, its a security breach
         }
 
-class Drinks(db.Model):
-    
-    drink_id = db.Column(db.Integer, primary_key=True)
-    drink_name = db.Column(db.String(250), unique=False, nullable=False)
-    instructions = db.Column(db.Text(), unique=False, nullable=False)
-    measurements = db.Column(db.Text(), unique=False, nullable=False)
-    thumbnail = db.Column(db.String(250), unique=False, nullable=False)
-
-    def __repr__(self):
-        return '<Drinks %r>' % self.drink_name
-
-    def serialize(self):
-        return {
-            "drink_id": self.drink_id,
-            "drink_name": self.drink_name,
-            "instructions": self.instructions,
-            "measurements": self.measurements,
-            "thumbnail": self.thumbnail
-            # do not serialize the password, its a security breach
-        }
-
 class Favorites(db.Model):
-    
-    user_id = db.Column(db.Integer, primary_key=True)
-    drink_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, unique=False, nullable=False)
+    drink_id = db.Column(db.Integer, unique=False, nullable=False)
     drink_name = db.Column(db.String(250), unique=False, nullable=False)
 
     def __repr__(self):
@@ -58,6 +37,7 @@ class Favorites(db.Model):
 
     def serialize(self):
         return {
+            "id": self.id,
             "user_id": self.user_id,
             "drink_id": self.drink_id,
             "drink_name": self.drink_name

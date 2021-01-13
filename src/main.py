@@ -8,11 +8,9 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Favorite
 from datetime import datetime
-from flask_jwt_simple import (
-    JWTManager, jwt_required, create_jwt, get_jwt_identity
-)
+from flask_jwt_simple import (JWTManager, jwt_required, create_jwt, get_jwt_identity)
 
 #from models import Person
 
@@ -51,7 +49,7 @@ def login():
         return jsonify({"msg": "Bad username or password"}), 401
     
     # Identity can be any data that is json serializable
-    ret = {'jwt': create_jwt(identity=email)}
+    ret = {'jwt': create_jwt(identity=usercheck.id),'id':usercheck.id,'user':usercheck.serialize()}
     return jsonify(ret), 200
 
 #creating a new user registration 
@@ -118,6 +116,53 @@ def delete_info(user_id):
             db.session.delete(user_to_delete)
             db.session.commit()
             return jsonify(user_to_delete.serialize()), 204
+
+#creating a new user registration 
+@app.route('/favorites', methods=['POST', 'GET'])
+@jwt_required
+def handle_favorites():
+    """
+    Create favorite and retrieve all faves
+    """
+    user_id = get_jwt_identity()
+    # POST request - creates new favorites
+    if request.method == 'POST':
+        body = request.get_json()
+        if body is None:
+            raise APIException("You need to specify the request body as a json object", status_code=400)
+        if 'drink_id' not in body:
+            raise APIException('You need to specify the drink_id', status_code=400) 
+        if 'drink_name' not in body:
+            raise APIException('You need to specify the drink_name', status_code=400)    
+        favorite = Favorite(user_id=user_id, drink_id=body['drink_id'], drink_name=body['drink_name'])
+        db.session.add(favorite)
+        db.session.commit()
+        return "ok", 200
+
+    # GET request - shows all faves 
+    if request.method == 'GET':
+        all_favorites = Favorite.query.all()
+        all_favorites = list(map(lambda x: x.serialize(), all_favorites))
+        return jsonify(all_favorites), 200
+
+    return "Invalid Method", 404
+
+
+
+# deletes faves by id
+@app.route('/favorites/<int:id>', methods=['DELETE'])
+def delete_favorite(id):
+        request_body= request.get_json()
+        print(request_body)
+        favorite_to_delete = Favorite.query.get(id)
+        if favorite_to_delete is None:
+            raise APIException('Favorite not found', status_code=404)
+        else:
+            db.session.delete(favorite_to_delete)
+            db.session.commit()
+            return jsonify(favorite_to_delete.serialize()), 204
+
+
 
 
 # Handle/serialize errors like a JSON object

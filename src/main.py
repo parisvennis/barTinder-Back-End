@@ -128,6 +128,7 @@ def handle_favorites():
     # POST request - creates new favorites
     if request.method == 'POST':
         body = request.get_json()
+        print("######: ", body)
         if body is None:
             raise APIException("You need to specify the request body as a json object", status_code=400)
         if 'drink_id' not in body:

@@ -134,8 +134,10 @@ def handle_favorites():
         if 'drink_id' not in body:
             raise APIException('You need to specify the drink_id', status_code=400) 
         if 'drink_name' not in body:
+            raise APIException('You need to specify the drink_name', status_code=400) 
+        if 'drink_img' not in body:
             raise APIException('You need to specify the drink_name', status_code=400)    
-        favorite = Favorite(user_id=user_id, drink_id=body['drink_id'], drink_name=body['drink_name'])
+        favorite = Favorite(user_id=user_id, drink_id=body['drink_id'], drink_name=body['drink_name'], drink_img=body['drink_img'])
         db.session.add(favorite)
         db.session.commit()
         return "ok", 200

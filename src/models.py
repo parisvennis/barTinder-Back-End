@@ -32,6 +32,7 @@ class Favorite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     drink_id = db.Column(db.Integer, unique=False, nullable=False)
     drink_name = db.Column(db.String(250), unique=False, nullable=False)
+    drink_img = db.Column(db.String(250), unique=False, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
         nullable=False)
 
@@ -43,6 +44,7 @@ class Favorite(db.Model):
             "id": self.id,
             "user_id": self.user_id,
             "drink_id": self.drink_id,
-            "drink_name": self.drink_name
+            "drink_name": self.drink_name,
+            "drink_img": self.drink_img
             # do not serialize the password, its a security breach
         }
